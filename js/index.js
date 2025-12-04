@@ -345,6 +345,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    const testimonialSlides = document.querySelectorAll('.testimonial-slide');
+    const testimonialDots = document.querySelectorAll('.testimonial-dots .dot');
+    let currentSlide = 0;
+    let testimonialInterval;
+    
+    function showSlide(index) {
+        const currentElement = testimonialSlides[currentSlide];
+        const nextElement = testimonialSlides[index];
+        
+        currentElement.classList.remove('animate__fadeIn');
+        currentElement.classList.add('animate__fadeOut');
+        
+        setTimeout(() => {
+            testimonialSlides.forEach((slide, i) => {
+                slide.classList.remove('active', 'animate__fadeIn', 'animate__fadeOut');
+                testimonialDots[i].classList.remove('active');
+            });
+            
+            nextElement.classList.add('active', 'animate__animated', 'animate__fadeIn');
+            testimonialDots[index].classList.add('active');
+            currentSlide = index;
+        }, 500);
+    }
+    
+    function nextSlide() {
+        let next = currentSlide + 1;
+        if (next >= testimonialSlides.length) {
+            next = 0;
+        }
+        showSlide(next);
+    }
+    
+    function startTestimonialCarousel() {
+        testimonialInterval = setInterval(nextSlide, 5000);
+    }
+    
+    if (testimonialSlides.length > 0) {
+        testimonialSlides[0].classList.add('animate__animated', 'animate__fadeIn');
+        startTestimonialCarousel();
+        
+        testimonialDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                if (index !== currentSlide) {
+                    clearInterval(testimonialInterval);
+                    showSlide(index);
+                    startTestimonialCarousel();
+                }
+            });
+        });
+        
+        const carousel = document.querySelector('.testimonial-carousel');
+        if (carousel) {
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(testimonialInterval);
+            });
+            carousel.addEventListener('mouseleave', () => {
+                startTestimonialCarousel();
+            });
+        }
+    }
+    
     console.log('%c¡Bienvenido a EZClass! 🎓', 'color: #4F46E5; font-size: 20px; font-weight: bold;');
     console.log('%cTransformando la experiencia académica de la UPC', 'color: #64748B; font-size: 14px;');
     console.log('%cDesarrollado por: Fernando Condezo, Fernando Contreras, Luis Chui, Gustavo Yabiku, Deiby Vargas', 'color: #10B981; font-size: 12px;');
