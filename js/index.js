@@ -318,7 +318,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const teamCards = document.querySelectorAll('.team-card');
     
     teamCards.forEach(card => {
-        card.addEventListener('mousemove', function(e) {
+        card.addEventListener('transitionend', function handler() {
+            this.style.transition = 'transform 0.15s ease, box-shadow 0.3s ease';
+            this.removeEventListener('transitionend', handler);
+        });
+        
+        const handleTilt = function(e) {
             const rect = this.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -326,11 +331,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = (y - centerY) / 10;
-            const rotateY = (centerX - x) / 10;
+            const rotateX = (y - centerY) / 15;
+            const rotateY = (centerX - x) / 15;
             
             this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
-        });
+        };
+        
+        card.addEventListener('mouseenter', handleTilt);
+        card.addEventListener('mousemove', handleTilt);
         
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
